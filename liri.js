@@ -1,9 +1,9 @@
 require("dotenv").config();
 
 var Spotify = require('node-spotify-api');
+
 // //when you see a hyperlink you need to use axios
-var Concert = require('bit_js');
-var Movie = require('omdb');
+
 var fs = require("fs");
 var axios = require("axios");
 
@@ -14,7 +14,9 @@ var keys = require("./keys.js");
 var command = process.argv[2]
 var keyword = process.argv.slice(3).join(" ");
 var spotify = new Spotify(keys.spotify);
-var concert = new Concert(keys.concert);
+var moment = require("moment");
+
+
 
 console.log(command, keyword);
 
@@ -42,24 +44,48 @@ function switchCommands() {
 }
 
 function movieThis() {
+    var queryUrl = "http://www.omdbapi.com/?t=" + keyword + "&y=&plot=short&apikey=trilogy";
+
+axios.get(queryUrl).then(function(response){
+    console.log(response.data);
+
+    console.log("Title: " + response.data.Title);
+    console.log("Year: " + response.data.Year);
+    console.log("IMDB Rating: " + response.data.imdbRating);
+    console.log("Rotten Tomatoes Rating: " + response.data.Ratings[1].Value);
+    console.log("")
+    
+
+})
 
 }
 function doWhatItSays() {
     //set the variables and call the switch function 
-    
+    fs.readFile("./random.txt", "utf8", function(err, data){
+        if (err) {
+            console.log(err);
+        } 
+        keyword = data.split(",")[1];
+        command = data.split(",")[0];
+        switchCommands();
+    })
+
 }
 
 function concertThis() {
+    //if you have a hyperlink you use axios.get 
     axios.get("https://rest.bandsintown.com/artists/celine+dion/events?app_id=codingbootcamp").then(function (response) {
-
-        console.log(response.data[0]);
-    })
-    concert.search({ type 'venue'.query: keyword }, function (err, response) 
-) if (err) {
-        retun console.log('Error occurred: ' + err);
-
+//response.data is the array
+    var concertList = response.data;
+    for (let i = 0; i < concertList.length; i++) {
+        console.log("Venue: ", concertList[i].venue.name);
+        console.log("Venue Location: ", concertList[i].venue.city, concertList[i].venue.country);
+        console.log("Date of Event: ", moment(concertList[i].datetime, "YYYY-MM-DD").format("MM/DD/YYYY"));
+        console.log("___________________________________");
     }
+        // console.log(response.data);
 
+    })
 }
 function spotifyThisSong() {
     //Spotify API call
@@ -86,7 +112,7 @@ function spotifyThisSong() {
 
 switchCommands();
 
-// //omdb API call
+//omdb API call
 
 // for (var i = 2; i < nodeArgs.length; i++) {
 
