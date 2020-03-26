@@ -1,9 +1,6 @@
 require("dotenv").config();
 
 var Spotify = require('node-spotify-api');
-
-// //when you see a hyperlink you need to use axios
-
 var fs = require("fs");
 var axios = require("axios");
 
@@ -16,10 +13,7 @@ var keyword = process.argv.slice(3).join(" ");
 var spotify = new Spotify(keys.spotify);
 var moment = require("moment");
 
-
-
 console.log(command, keyword);
-
 
 function switchCommands() {
 
@@ -46,25 +40,25 @@ function switchCommands() {
 function movieThis() {
     var queryUrl = "http://www.omdbapi.com/?t=" + keyword + "&y=&plot=short&apikey=trilogy";
 
-axios.get(queryUrl).then(function(response){
-    console.log(response.data);
+    axios.get(queryUrl).then(function (response) {
+       
 
-    console.log("Title: " + response.data.Title);
-    console.log("Year: " + response.data.Year);
-    console.log("IMDB Rating: " + response.data.imdbRating);
-    console.log("Rotten Tomatoes Rating: " + response.data.Ratings[1].Value);
-    console.log("")
-    
+        console.log("Title: " + response.data.Title);
+        console.log("Year: " + response.data.Year);
+        console.log("IMDB Rating: " + response.data.imdbRating);
+        console.log("Rotten Tomatoes Rating: " + response.data.Ratings[1].Value);
+        console.log("")
 
-})
+
+    })
 
 }
 function doWhatItSays() {
     //set the variables and call the switch function 
-    fs.readFile("./random.txt", "utf8", function(err, data){
+    fs.readFile("./random.txt", "utf8", function (err, data) {
         if (err) {
             console.log(err);
-        } 
+        }
         keyword = data.split(",")[1];
         command = data.split(",")[0];
         switchCommands();
@@ -75,14 +69,14 @@ function doWhatItSays() {
 function concertThis() {
     //if you have a hyperlink you use axios.get 
     axios.get("https://rest.bandsintown.com/artists/celine+dion/events?app_id=codingbootcamp").then(function (response) {
-//response.data is the array
-    var concertList = response.data;
-    for (let i = 0; i < concertList.length; i++) {
-        console.log("Venue: ", concertList[i].venue.name);
-        console.log("Venue Location: ", concertList[i].venue.city, concertList[i].venue.country);
-        console.log("Date of Event: ", moment(concertList[i].datetime, "YYYY-MM-DD").format("MM/DD/YYYY"));
-        console.log("___________________________________");
-    }
+        //response.data is the array
+        var concertList = response.data;
+        for (let i = 0; i < concertList.length; i++) {
+            console.log("Venue: ", concertList[i].venue.name);
+            console.log("Venue Location: ", concertList[i].venue.city, concertList[i].venue.country);
+            console.log("Date of Event: ", moment(concertList[i].datetime, "YYYY-MM-DD").format("MM/DD/YYYY"));
+            console.log("___________________________________");
+        }
         // console.log(response.data);
 
     })
@@ -112,16 +106,6 @@ function spotifyThisSong() {
 
 switchCommands();
 
-//omdb API call
 
-// for (var i = 2; i < nodeArgs.length; i++) {
-
-//     if (i > 2 && i < nodeArgs.length) {
-//       movieName = movieName + "+" + nodeArgs[i];
-//     } else {
-//       movieName += nodeArgs[i];
-
-//     }
-//   }
 
 
